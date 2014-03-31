@@ -9,8 +9,11 @@
     "express": "3.4.8",
     "ejs": "*",
     "sequelize": "~1.7.0",
-    "sqlite3": "~2.2.0",
-    "express-partials": "~0.2.0"
+    "express-partials": "~0.2.0",
+    "pg": "~2.11.1"
+  },
+  "devDpendencies": {
+    "sqlite3": "~2.2.0"
   },
   "engines": {
     "node": "0.10.x",
