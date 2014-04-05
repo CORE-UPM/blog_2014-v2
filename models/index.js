@@ -21,8 +21,7 @@ var sequelize = new Sequelize(DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD,
               port:     DATABASE_PORT,
               host:     DATABASE_HOST,
               storage:  process.env.DATABASE_STORAGE,   // solo local en .env
-              omitNull: true,                           // para postgres
-              define: {underscored: false}
+              omitNull: true                            // para postgres
             });
 
 
