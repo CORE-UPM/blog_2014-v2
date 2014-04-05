@@ -30,10 +30,6 @@ app.use(partials());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
 
 // Helper estatico:
 app.locals.escapeText =  function(text) {
@@ -58,6 +54,31 @@ app.post('/posts', postController.create);
 app.get('/posts/:postid([0-9]+)/edit', postController.edit);
 app.put('/posts/:postid([0-9]+)', postController.update);
 app.delete('/posts/:postid([0-9]+)', postController.destroy);
+
+
+// Fichero o ruta no existente:
+app.use(function(req,res,next) {
+    next(new Error('Recurso \"'+req.url+'\" no encontrado'));
+});
+
+// Gestion de errores
+
+if ('development' == app.get('env')) {
+  // development
+  app.use(function(err,req,res,next) {
+    res.render('error', { message: err.message,
+                          stack:   err.stack 
+              });
+  });
+} else { 
+  // produccion
+  app.use(function(err,req,res,next) {
+    res.render('error', { message: err.message,
+                          stack:   null 
+              });
+  });
+}
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
