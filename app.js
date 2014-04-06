@@ -10,6 +10,7 @@ var path = require('path');
 var partials = require('express-partials');
 
 var postController = require('./routes/post_controller');
+var userController = require('./routes/user_controller.js');
 
 var app = express();
 
@@ -43,19 +44,36 @@ app.locals.escapeText =  function(text) {
           .replace(/\n/g, '<br>');
 };
 
-// Rutas
+//-- Rutas -----------------
 
 app.get('/', routes.index);
 
-app.param('postid',postController.load);  // autoload :postid
+//-- Auto Load -------------
 
-app.get('/posts', postController.index);
-app.get('/posts/new', postController.new);
-app.get('/posts/:postid([0-9]+)', postController.show);
-app.post('/posts', postController.create);
-app.get('/posts/:postid([0-9]+)/edit', postController.edit);
-app.put('/posts/:postid([0-9]+)', postController.update);
+app.param('postid',postController.load);
+app.param('userid', userController.load);
+
+//-- Posts -----------------
+
+app.get(   '/posts',                 postController.index);
+app.get(   '/posts/new',             postController.new);
+app.get(   '/posts/:postid([0-9]+)', postController.show);
+app.post(  '/posts',                 postController.create);
+app.get(   '/posts/:postid([0-9]+)/edit', postController.edit);
+app.put(   '/posts/:postid([0-9]+)', postController.update);
 app.delete('/posts/:postid([0-9]+)', postController.destroy);
+
+//-- Users -----------------
+
+app.get(   '/users',                 userController.index);
+app.get(   '/users/new',             userController.new);
+app.get(   '/users/:userid([0-9]+)', userController.show);
+app.post(  '/users',                 userController.create);
+app.get(   '/users/:userid([0-9]+)/edit', userController.edit);
+app.put(   '/users/:userid([0-9]+)', userController.update);
+app.delete('/users/:userid([0-9]+)', userController.destroy);
+
+//--------------------------
 
 
 // Fichero o ruta no existente:
