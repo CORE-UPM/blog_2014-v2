@@ -10,7 +10,8 @@
     "ejs": "*",
     "express-partials": "~0.2.0",
     "sequelize": "~1.7.0",
-    "pg": "~2.11.1"
+    "pg": "~2.11.1",
+    "express-flash": "0.0.2"
   },
   "devDpendencies": {
     "sqlite3": "~2.2.0"
