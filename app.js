@@ -9,6 +9,7 @@ var http = require('http');
 var path = require('path');
 var partials = require('express-partials');
 
+var sessionController = require('./routes/session_controller.js');
 var postController = require('./routes/post_controller');
 var userController = require('./routes/user_controller.js');
 
@@ -30,6 +31,16 @@ app.use(partials());
 
 app.use(require('express-flash')());
 
+
+// Helper dinamico:
+app.use(function(req, res, next) {
+
+   // Hacer visible req.session en las vistas
+   res.locals.session = req.session;
+
+   next();
+});
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -48,6 +59,12 @@ app.locals.escapeText =  function(text) {
 
 app.get('/', routes.index);
 
+//-- Session ---------------
+
+app.get('/login',  sessionController.new);
+app.post('/login', sessionController.create);
+app.get('/logout', sessionController.destroy);
+
 //-- Auto Load -------------
 
 app.param('postid',postController.load);
@@ -56,12 +73,17 @@ app.param('userid', userController.load);
 //-- Posts -----------------
 
 app.get(   '/posts',                 postController.index);
-app.get(   '/posts/new',             postController.new);
+app.get(   '/posts/new',             sessionController.loginRequired,
+                                     postController.new);
 app.get(   '/posts/:postid([0-9]+)', postController.show);
-app.post(  '/posts',                 postController.create);
-app.get(   '/posts/:postid([0-9]+)/edit', postController.edit);
-app.put(   '/posts/:postid([0-9]+)', postController.update);
-app.delete('/posts/:postid([0-9]+)', postController.destroy);
+app.post(  '/posts',                 sessionController.loginRequired,
+                                     postController.create);
+app.get(   '/posts/:postid([0-9]+)/edit', sessionController.loginRequired,
+                                     postController.edit);
+app.put(   '/posts/:postid([0-9]+)', sessionController.loginRequired,
+                                     postController.update);
+app.delete('/posts/:postid([0-9]+)', sessionController.loginRequired,
+                                     postController.destroy);
 
 //-- Users -----------------
 
@@ -69,9 +91,12 @@ app.get(   '/users',                 userController.index);
 app.get(   '/users/new',             userController.new);
 app.get(   '/users/:userid([0-9]+)', userController.show);
 app.post(  '/users',                 userController.create);
-app.get(   '/users/:userid([0-9]+)/edit', userController.edit);
-app.put(   '/users/:userid([0-9]+)', userController.update);
-app.delete('/users/:userid([0-9]+)', userController.destroy);
+app.get(   '/users/:userid([0-9]+)/edit', sessionController.loginRequired,
+                                     userController.edit);
+app.put(   '/users/:userid([0-9]+)', sessionController.loginRequired,
+                                     userController.update);
+app.delete('/users/:userid([0-9]+)', sessionController.loginRequired,
+                                     userController.destroy);
 
 //--------------------------
 
