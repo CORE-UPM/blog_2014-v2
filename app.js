@@ -78,25 +78,39 @@ app.get(   '/posts/new',             sessionController.loginRequired,
 app.get(   '/posts/:postid([0-9]+)', postController.show);
 app.post(  '/posts',                 sessionController.loginRequired,
                                      postController.create);
+
 app.get(   '/posts/:postid([0-9]+)/edit', sessionController.loginRequired,
-                                     postController.edit);
+                                          postController.loggedUserIsAuthor,
+                                          postController.edit);
+
 app.put(   '/posts/:postid([0-9]+)', sessionController.loginRequired,
+                                     postController.loggedUserIsAuthor,
                                      postController.update);
+
 app.delete('/posts/:postid([0-9]+)', sessionController.loginRequired,
+                                     postController.loggedUserIsAuthor,
                                      postController.destroy);
 
 //-- Users -----------------
 
 app.get(   '/users',                 userController.index);
+
 app.get(   '/users/new',             userController.new);
+
 app.get(   '/users/:userid([0-9]+)', userController.show);
+
 app.post(  '/users',                 userController.create);
+
 app.get(   '/users/:userid([0-9]+)/edit', sessionController.loginRequired,
+                                     userController.loggedUserIsUser,
                                      userController.edit);
+
 app.put(   '/users/:userid([0-9]+)', sessionController.loginRequired,
+                                     userController.loggedUserIsUser,
                                      userController.update);
-app.delete('/users/:userid([0-9]+)', sessionController.loginRequired,
-                                     userController.destroy);
+
+// app.delete('/users/:userid([0-9]+)', sessionController.loginRequired,
+//                                     userController.destroy);
 
 //--------------------------
 
